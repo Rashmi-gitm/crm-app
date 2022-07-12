@@ -1,5 +1,5 @@
 
-import { Link } from 'react-router-dom';
+
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import React, {useState} from 'react'
 
@@ -11,7 +11,7 @@ const toggleSignup = () => {
     setShowSignup(!showSignup)
 }
 const handleSelect = (e) => {
-  setUSerType(e);
+  setUSerType(e)
 }
 
   return (
@@ -22,21 +22,21 @@ const handleSelect = (e) => {
         {
           !showSignup ? (
             
-            <div className="login-wrapper">
+            <div className="login">
             <form>
-            <h4 className='text-center'>Login</h4>
-            <div className="input-group">
-              <input type="text"  id="username" placeholder="User Id" className='form-control' />
+            <h4 className='text-center p-3'>Login</h4>
+            <div className="input-group m-2">
+              <input type="text"  id="username" placeholder="Enter Your UserId" className='form-control' />
 
             </div>
-            <div className="input-group">
-              <input type="password"  id="password" placeholder="Password" className='form-control' />
+            <div className="input-group m-2">
+              <input type="password"  id="password" placeholder="Enter Password" className='form-control' />
 
             </div>
             <div className='input-group'>
-              <Link to ="/home" className="btn btn-primary form-control">Log in as user</Link>
+              <button  className="btn btn-primary m-2 d-flex justify-content-center align-items-center form-control">LogIn</button>
             </div>
-            <div className='text-center text-info' onClick={toggleSignup}>Don't have an account? Signup </div>
+            <div className='text-center text-info' onClick={() => toggleSignup() }>Not a Member? Signup </div>
             {/* user id, passowrd, login button, toggle text */}
 
             </form>
@@ -44,49 +44,50 @@ const handleSelect = (e) => {
             
           ) :
           ( <form>
-            <div className='login-wrapper'>
-                        <h4 className='text-center'>Signup
+            <div className='signup'>
+                        <h4 className='text-center p-3 '>Signup
                         </h4>
-                        <div className='input-group'>
-                            <input type="text"  id="username" placeholder='User Id' className='form-control' />
+                        <div className='input-group m-2'>
+                            <input type="text"  id="username" placeholder='Enter Your Name' className='form-control' />
                         </div>
-                        <div className='input-group'>
-                            <input type="text"  id="username" placeholder='Username' className='form-control' />
+                        <div className='input-group m-2'>
+                            <input type="text"  id="username" placeholder='Enter Your UserId' className='form-control' />
                         </div>
-                                                
-                            <input type="email"  id="email" placeholder='E-mail' className='form-control my-1' />
-                            <div className='input-group'>
-                            <input type="password"  id="password" placeholder='Password' className='form-control' />
+                             <div className='input-group m-2'>                  
+                            <input type="email"  id="email" placeholder='Enter Your e-mail' className='form-control' />
+                            </div> 
+                            <div className='input-group m-2'>
+                            <input type="password"  id="password" placeholder='Enter Your Password' className='form-control' />
                         </div>
-                        <div className="input-group m-1">
+                        <div className="input-group m-2 form-control">
                           <span className='text-muted'>User Type</span>
                           <DropdownButton 
                           align="end"
                           title={userType}
                           variant="light"
-                          className="mx-1"
+                          className="mx-2"
                           onSelect ={handleSelect}>
-                            <Dropdown.Item eventkey="CUSTOMER">Customer</Dropdown.Item>
-                            <Dropdown.Item eventkey="ENGINEER">Engineer</Dropdown.Item>
+                            <Dropdown.Item eventkey="CUSTOMER">CUSTOMER</Dropdown.Item>
+                            <Dropdown.Item eventkey="ENGINEER">ENGINEER</Dropdown.Item>
                           </DropdownButton>
                         </div>
-                        <div className='input-group'>
-                            <input type="submit" value="SignUp in as User" className='btn btn-primary form-control'/>
-
-                        </div>
-                        <div className='text-center text-info' onClick={toggleSignup}>Already have an account? LogIn</div>
+                        <button className="btn btn-primary m-2 d-flex justify-content-center align-items-center">
+                    Signup
+                  </button>
                         
+                        <div className='text-center text-info' onClick={() => toggleSignup()}>Already a member? LogIn</div>
+                           
                 </div>
                 </form>
           )
         }
       </div>
     </div>
-   </div>
+    </div>
 
-    <h3>Hello</h3>
-   </div>
+
+</div>
   )
 }
 
-export default Login
+export default Login;

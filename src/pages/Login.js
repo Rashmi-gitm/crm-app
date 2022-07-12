@@ -2,16 +2,96 @@
 
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import React, {useState} from 'react'
+import {userSignin, userSignup} from '../api/auth';
 
 function Login() {
     const [showSignup, setShowSignup] = useState(false);
-    const [userType, setUSerType] = useState("CUSTOMER");
+    const [userType, setuserType] = useState("CUSTOMER");
+    const [userSignupData, setUserSignupData] = useState({});
+    const [message, setMessage] =useState('');
 
 const toggleSignup = () => {
     setShowSignup(!showSignup)
 }
 const handleSelect = (e) => {
-  setUSerType(e)
+  setuserType(e)
+}
+
+const updateSignupData = (e) => {
+  userSignupData[e.target.id]= e.target.value;
+  console.log(userSignupData);
+} 
+
+const signupFn = (e) => {
+ const username = userSignupData.username;
+ const userId = userSignupData.userId;
+ const email = userSignupData.email;
+ const password = userSignupData.password;
+
+ const data = {
+  name: username,
+  userId: userId,
+  email: email,
+  userType: userType,
+  password: password
+ }
+
+ console.log ('DATA', data);
+
+e.preventDefault();
+
+userSignup(data).then(function(response){
+  if(response.status===201){
+    window.location.href = '/'
+
+  }
+})
+.catch(function(error){
+  if(error.response.status === 400){
+    setMessage( error.response.data.message);
+  }else {
+    console.log(error);
+  }
+})
+
+}
+
+
+const loginFn=(e) => {
+  const userId= document.getElementById("userId").value;
+  const password = document.getElementById("passowrd").value;
+
+  const data = {
+    userId: userId,
+    password: password
+  }
+
+userSignin(data).then(function(response){
+  console.log(response);
+  if(response.status === 200){
+    localStorage.setItem("name", response.data.name);
+    localStorage.setItem("userId", response.data.userId);
+    localStorage.setItem("email", response.data.email);
+    localStorage.setItem("userTypes", response.data.userTypes);
+    localStorage.setItem("userStatus", response.data.userStatus);
+    localStorage.setItem("token", response.data.accessToken);
+  }
+
+  if(response.data.userType === "CUSTOMER"){
+    window.location.href = "/customer";
+  } else if (response.data.userTypes === "ENGINEER"){
+    window.location.href = "/engineer";
+  } else{
+    window.location.href ="/admin";
+  }
+}).catch(function(error){
+  if(error.response.status === 400){
+    setMessage( error.response.data.message);
+  }else {
+    console.log(error);
+  }
+})
+
 }
 
   return (
@@ -23,10 +103,10 @@ const handleSelect = (e) => {
           !showSignup ? (
             
             <div className="login">
-            <form>
+            <form onSubmit={loginFn}>
             <h4 className='text-center p-3'>Login</h4>
             <div className="input-group m-2">
-              <input type="text"  id="username" placeholder="Enter Your UserId" className='form-control' />
+              <input type="text"  id="userId" placeholder="Enter Your UserId" className='form-control' />
 
             </div>
             <div className="input-group m-2">
@@ -43,21 +123,21 @@ const handleSelect = (e) => {
             </div>
             
           ) :
-          ( <form>
+          ( <form onSubmit = {signupFn}>
             <div className='signup'>
                         <h4 className='text-center p-3 '>Signup
                         </h4>
                         <div className='input-group m-2'>
-                            <input type="text"  id="username" placeholder='Enter Your Name' className='form-control' />
+                            <input type="text"  id="userId" placeholder='UserId' className='form-control' onChange={updateSignupData} />
                         </div>
                         <div className='input-group m-2'>
-                            <input type="text"  id="username" placeholder='Enter Your UserId' className='form-control' />
+                            <input type="text"  id="username" placeholder='Enter Your Username' className='form-control' onChange={updateSignupData} />
                         </div>
                              <div className='input-group m-2'>                  
-                            <input type="email"  id="email" placeholder='Enter Your e-mail' className='form-control' />
+                            <input type="email"  id="email" placeholder='Enter Your e-mail' className='form-control'  onChange={updateSignupData}/>
                             </div> 
                             <div className='input-group m-2'>
-                            <input type="password"  id="password" placeholder='Enter Your Password' className='form-control' />
+                            <input type="password"  id="password" placeholder='Enter Your Password' className='form-control' onChange={updateSignupData} />
                         </div>
                         <div className="input-group m-2 form-control">
                           <span className='text-muted'>User Type</span>
@@ -78,6 +158,7 @@ const handleSelect = (e) => {
                         <div className='text-center text-info' onClick={() => toggleSignup()}>Already a member? LogIn</div>
                            
                 </div>
+                <div className="text-danger text-center">{message}</div>
                 </form>
           )
         }

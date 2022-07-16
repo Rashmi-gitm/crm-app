@@ -3,6 +3,7 @@ import React, {useState} from 'react'
 import {  DropdownButton, Dropdown } from 'react-bootstrap';
 import {userSignin, userSignup} from '../api/auth';
 import '../App.css';
+import { useNavigate } from 'react-router-dom';
 
 
 function Login() {
@@ -58,6 +59,8 @@ userSignup(data).then(function(response){
 
 }
 
+let history = useNavigate();
+
 
 const loginFn=(e) => {
   const userId= document.getElementById("userId").value;
@@ -85,11 +88,11 @@ userSignin(data).then(function(response){
     localStorage.setItem("token", response.data.accessToken);
 
    if(response.data.userTypes === "CUSTOMER"){
-    window.location.href = "/customer";
+    history ("/customer")
   } else if (response.data.userTypes === "ENGINEER"){
-    window.location.href = "/engineer";
+    history ("/engineer")
   } else{
-    window.location.href ="/admin";
+   history ("/admin")
   }
     }
 }

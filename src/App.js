@@ -1,10 +1,21 @@
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Suspense } from 'react';
+import  React, { Suspense } from 'react';
 import Login from './pages/Login';
+import Admin from './pages/Admin';
+import Customer from './pages/Customer';
+import Engineer from './pages/Engineer';
+import RequireAuth from './component/RequireAuth';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import './App.css';
+
+
+const ROLES = {
+  'CUSTOMER' : 'CUSTOMER',
+  'ENGINEER' : 'ENGINEER',
+  'ADMIN' : 'ADMIN'
+}
 
 function App() {
   return (
@@ -14,8 +25,31 @@ function App() {
         <Suspense fallback={<div>Loading...</div>}>
           <Login />
         </Suspense>
-      } />
-    </Routes>
+      } 
+      />
+
+
+     <Route element={<RequireAuth allowedRoles={[ROLES.ADMIN]}/>}>
+      <Route path ='/admin' exact element = {<Admin/>}/>
+     </Route>
+
+     
+     <Route element={<RequireAuth allowedRoles={[ROLES.CUSTOMER]}/>}>
+      <Route path ='/customer' exact element = {<Customer/>}/>
+     </Route>
+
+
+
+     <Route element={<RequireAuth allowedRoles={[ROLES.ENGINEER]}/>}>
+      <Route path ='/engineer' exact element = {<Engineer/>}/>
+     </Route>
+
+
+
+
+
+
+    </Routes> 
   </Router>
   );
 }

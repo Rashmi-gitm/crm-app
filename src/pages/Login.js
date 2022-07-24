@@ -1,187 +1,192 @@
 
 import React, {useState} from 'react'
-import {  DropdownButton, Dropdown } from 'react-bootstrap';
-import {userSignin, userSignup} from '../api/auth';
-import '../App.css';
-import { useNavigate } from 'react-router-dom';
-
+import {Dropdown, DropdownButton} from 'react-bootstrap'
+import {userSignup, userSignin} from '../api/auth'
+import {useNavigate} from 'react-router-dom';
 
 function Login() {
-    const [showSignup, setShowSignup] = useState(false);
+    const [SignUp, setShowSignUp] = useState(false);
     const [userType, setuserType] = useState("CUSTOMER");
     const [userSignupData, setUserSignupData] = useState({});
-    const [message, setMessage] =useState('');
-
-const toggleSignup = () => {
-    setShowSignup(!showSignup)
-}
-const handleSelect = (e) => {
-  setuserType(e)
-}
-
-const updateSignupData = (e) => {
-  userSignupData[e.target.id]= e.target.value;
-  console.log(userSignupData);
-} 
-
-const signupFn = (e) => {
- const username = userSignupData.username;
- const userId = userSignupData.userId;
- const email = userSignupData.email;
- const password = userSignupData.password;
-
- const data = {
-  name: username,
-  userId: userId,
-  email: email,
-  userType: userType,
-  password: password
- }
-
- console.log ('DATA', data);
-
-e.preventDefault();
-
-userSignup(data).then(function(response){
-  console.log(response);
-  if(response.status === 201) {
-    window.location.href = '/';
-
-  }
-})
-.catch(function(error){
-  if(error.response.status === 400){
-    setMessage( error.response.data.message);
-  }else {
-    console.log(error);
-  }
-})
-
-}
-
-let history = useNavigate();
+    const [message, setMessage] = useState("");
 
 
-const loginFn=(e) => {
-  const userId= document.getElementById("userId").value;
-  const password = document.getElementById("password").value;
 
-  const data = {
-    userId: userId,
-    password: password
-  }
-
-  e.preventDefault();
-
-userSignin(data).then(function(response){
-  console.log(response);
-  if(response.status === 200){
-   
-    if (response.data.message){
-      setMessage(response.data.message)
-    } else {
-      localStorage.setItem("name", response.data.name);
-    localStorage.setItem("userId", response.data.userId);
-    localStorage.setItem("email", response.data.email);
-    localStorage.setItem("userTypes", response.data.userTypes);
-    localStorage.setItem("userStatus", response.data.userStatus);
-    localStorage.setItem("token", response.data.accessToken);
-
-   if(response.data.userTypes === "CUSTOMER"){
-    history ("/customer")
-  } else if (response.data.userTypes === "ENGINEER"){
-    history ("/engineer")
-  } else{
-   history ("/admin")
-  }
+    const toggleSignup = () => {
+        setShowSignUp(!SignUp)
     }
-}
-}).catch(function(error){
-  if(error.response.status === 400){
-    setMessage( error.response.data.message);
-  }else {
-    console.log(error);
-    setMessage( error.response.data.message);
-  }
-})
+    const handleSelect = (e) => {
+        setuserType(e)
+    }
 
-}
+    const updateSignupData = (e) => {
+        userSignupData[e.target.id]= e.target.value;
+        console.log(userSignupData);
+    }
 
+    const signupFn = (e) => {
+       const username = userSignupData.username;
+       const userId = userSignupData.userId;
+       const email = userSignupData.email;
+       const password = userSignupData.password;
+
+       const data = {
+           name: username, 
+           userId: userId, 
+           email: email, 
+           userType: userType,
+           password: password
+       }
+
+       console.log('DATA', data);
+
+       e.preventDefault();
+       
+
+       userSignup(data)
+            .then(function(response){
+               if(response.status===201) {
+               history(0);
+           }
+       })
+       .catch(function(error){
+           if(error.response.status === 400){
+            setMessage(error.response.data.message);
+           } else {
+               console.log(error);
+           }
+       });
+
+    }
+    const history = useNavigate();
+
+
+    const loginFn = (e) => {
+        const userId= userSignupData.userId;
+        const password= userSignupData.password;
+
+        const data = {
+            userId: userId,
+            password: password
+        };
+        console.log("DATA", data);
+        e.preventDefault();
+
+
+        userSignin(data)
+            .then(function(response){
+            console.log(response);
+            if(response.status === 200){
+                // userid, email, userType, userStatus, token
+                localStorage.setItem("name", response.data.name);
+                localStorage.setItem("userId", response.data.userId);
+                localStorage.setItem("email", response.data.email);
+                localStorage.setItem("userTypes", response.data.userTypes);
+                localStorage.setItem("userStatus", response.data.userStatus);
+                localStorage.setItem("token", response.data.token);
+            
+            // customer, engineer, admin
+            if(response.data.userType === "CUSTOMER"){
+                history ("/customer");
+            }else if (response.data.userTypes === "ENGINEER") {
+                history ("/engineer");
+            }else {
+                history ("/admin");
+            }
+        }
+        }).catch(function(error){
+            if(error.response.status === 400){
+             setMessage(error.response.data.message);
+            } else {
+                console.log(error);
+            }
+         });
+   };
 
   return (
-   <div className="bg-secondary d-flex justify-content-center align-items-center vh-100">
-   <div className="card m-5 p-5">
-    <div className="row">
-      <div className ="col">
-        {
-          !showSignup ? (
-            
-            <div className="login">
-            <form onSubmit={loginFn}>
-            <h4 className='text-center p-3'>!! Login Here !!</h4>
-            <div className="input-group m-2">
-              <input type="text"  id="userId" placeholder="Enter Your UserId" className='form-control' />
+    <div className="bg-primary d-flex justify-content-center align-items-center vh-100">
+        <div className="card m-5 p-5">
+            <div className="row">
+                <div className="col">
+                    {
+                        !SignUp ? (
+                            <div className="login">
+                                <form onSubmit={loginFn}>
+                                    <h4 className= "text-center p-3"> LogIn</h4>
+                                        <input 
+                                        className= "input-group m-2 form-control"
+                                        type="text" placeholder='Enter your userId' id="userId"
+                                        onChange={updateSignupData} />
+                                    
 
-            </div>
-            <div className="input-group m-2">
-              <input type="password"  id="password" placeholder="Enter Password" className='form-control' />
+                                    <input 
+                                        className= "input-group m-2 form-control"
+                                        type="password" placeholder='Enter your Password' id="password"
+                                        onChange={updateSignupData} />
+                                       
+                                    <button className= "btn btn-success m-2 d-flex justify-content-center align-items-center">
+                                        LogIn
+                                    </button>
+                                  
+  
+                                    <div className="text-info text-center" 
+                                    onClick={toggleSignup}>Don't have an account? Signup</div>
+                                    <div className="text-danger text-center">{message}</div>
+                                </form>
+                            </div>
+                        ) : 
+                        (
+                          <div className="signup">
+                               
+                                 <form onSubmit={signupFn}>
+                                 <h4 className="text-center p-3">SignUp</h4>
 
-            </div>
-            <div className='input-group'>
-              <button  className="btn btn-primary m-2 d-flex justify-content-center align-items-center form-control">LogIn</button>
-            </div>
-            <div className='text-center text-info' onClick={() => toggleSignup() }>Not a Member? Signup </div>
-            
-            <div className="text-danger text-center">{message}</div>
-            </form>
-            </div>
-            
-          ) :
-          ( <form onSubmit = {signupFn}>
-            <div className='signup'>
-                        <h4 className='text-center p-3 '>Signup
-                        </h4>
-                        <div className='input-group m-2'>
-                            <input type="text"  id="userId" placeholder='UserId' className='form-control' onChange={updateSignupData} />
-                        </div>
-                        <div className='input-group m-2'>
-                            <input type="text"  id="username" placeholder='Enter Your Username' className='form-control' onChange={updateSignupData} />
-                        </div>
-                             <div className='input-group m-2'>                  
-                            <input type="email"  id="email" placeholder='Enter Your e-mail' className='form-control'  onChange={updateSignupData}/>
-                            </div> 
-                            <div className='input-group m-2'>
-                            <input type="password"  id="password" placeholder='Enter Your Password' className='form-control' onChange={updateSignupData} />
-                        </div>
-                        <div className="input-group m-2 form-control">
-                          <span className="text-muted">User Type</span>
-                          <DropdownButton 
-                          align="end"
-                          title={userType}
-                          variant="light"
-                          className="mx-2"
-                          onSelect ={handleSelect}>
-                            <Dropdown.Item eventKey="CUSTOMER">CUSTOMER</Dropdown.Item>
-                            <Dropdown.Item eventKey="ENGINEER">ENGINEER</Dropdown.Item>
-                          </DropdownButton>
-                        </div>
-                        <button className="btn btn-primary m-2 d-flex justify-content-center align-items-center">
-                    Signup
-                  </button>
-                        
-                        <div className='text-center text-info' onClick={() => toggleSignup()}>Already a member? LogIn</div>
-                           
+                                    <input 
+                                    className= "input-group m-2 form-control"
+                                    type="text"  placeholder='Enter your Name' id="username" onChange={updateSignupData} />
+
+                                    <input 
+                                    className= "input-group m-2 form-control"
+                                    type="text"  placeholder='Enter your userId' id="userId" onChange={updateSignupData} />
+
+                                    <input 
+                                    className= "input-group m-2 form-control"
+                                    type="email"  placeholder='Enter your Email' id="email" onChange={updateSignupData} />
+
+                                    <input 
+                                    className= "input-group m-2 form-control"
+                                    type="password"  placeholder='Enter your Password' id="password" onChange={updateSignupData} />
+                                   
+                                    
+                                 <div className="input-group m-1">
+                                       <span className='text-muted'>User Type</span>
+                                        <DropdownButton 
+                                        align="end"
+                                        title={userType}
+                                        variant="light"
+                                        className="mx-1"
+                                        onSelect={handleSelect} >
+                                            <Dropdown.Item eventKey="CUSTOMER">CUSTOMER</Dropdown.Item>
+                                            <Dropdown.Item eventKey="ENGINEER">ENGINEER</Dropdown.Item>
+                                        </DropdownButton>
+
+                                    </div>
+
+
+                                    <div className="input-group m-1">
+                                        <input type="submit" className='form-control btn btn-primary' value= "Sign Up" />
+                                    </div>
+                                    <div className="text-info text-center" onClick={toggleSignup}>Already have an account? Login</div>
+                                    <div className="text-danger">{message}</div>
+                                </form>
+                            
+                          </div>
+                        )
+                    }
                 </div>
-                <div className="text-danger text-center">{message}</div>
-                </form>
-          )
-        }
-      </div>
+            </div>
+        </div>
     </div>
-    </div>
-
-
-</div>
   )
 }
 

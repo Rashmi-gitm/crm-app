@@ -1,4 +1,3 @@
-
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import  React, { Suspense } from 'react';
 import Login from './pages/Login';
@@ -6,11 +5,22 @@ import Admin from './pages/Admin';
 import Customer from './pages/Customer';
 import Engineer from './pages/Engineer';
 import RequireAuth from './component/RequireAuth';
+import NotFound from './component/NotFound';
+import Unauthorized from './component/Unauthorised';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
-import './App.css';
-import NotFound from './component/NotFound';
+import '@coreui/coreui/dist/css/coreui.min.css';
+import "bootstrap-icons/font/bootstrap-icons.css";
+import 'react-circular-progressbar/dist/styles.css';
 
+
+
+
+//usertyepe === component
+//no direct way of doing this as we cannot access the ath name or we can access the component name
+//introduced an imutable objects ===
+//using this we can represents every components with a comparable values
+//taking that comparable value (embassy "just a metaphor") and using it to performe a validation with localstorage value
 
 const ROLES = {
   'CUSTOMER' : 'CUSTOMER',
@@ -22,25 +32,29 @@ function App() {
   return (
   <Router>
     <Routes>
-      <Route exact path ="/" element={
+      <Route exact
+       path ="/" 
+       element={
         <Suspense fallback={<div>Loading...</div>}>
           <Login />
         </Suspense>
       } 
       />
 
+<Route path="unauthorized" element={<Unauthorized />} />
 
-     <Route element={<RequireAuth allowedRoles={[ROLES.ADMIN]}/>}>
+{/* ROLES.ADMIN ====  [ADMIN] */}
+     {/*<Route element={<RequireAuth allowedRoles={[ROLES.ADMIN]}/>}>*/}
       <Route path ='/admin' exact element = {<Admin/>}/>
-     </Route>
+     {/*</Route>*/}
 
-     
+      {/* ROLES>CUSTOER === [CUSTOMER]   */}
      <Route element={<RequireAuth allowedRoles={[ROLES.CUSTOMER]}/>}>
       <Route path ='/customer' exact element = {<Customer/>}/>
      </Route>
 
 
-
+ {/* ROLES.ENGINEER === ENGINEER */}
      <Route element={<RequireAuth allowedRoles={[ROLES.ENGINEER]}/>}>
       <Route path ='/engineer' exact element = {<Engineer/>}/>
      </Route>
@@ -56,3 +70,24 @@ function App() {
 }
 
 export default App;
+
+
+
+
+
+
+
+/*
+API FETCHING FLOW  
+ Step 1 : get all the necessary keys in place : .env, url, 
+          REACT_APP_SERVER_URL= https://relevel-crm--backend.herokuapp.com
+ 2.1:GET Fetch the api and get the results in console. 
+           axios.get ==> .then ==> log the response
+ 2.2: POST, send the data to the api and log the response in console
+            axios.post ==> grab the values from UI ==> .then ==> log the response
+ 2.3: PUT, Grab the curr value, store it -- print the curr values, grab the new values and send the new values to the api 
+ 2.4: DELETE, .remove() 
+            axios.delete ==> .remove ==> .then ==> log the reponse 
+ 3. Map theough the array of objects and print it list 
+ 4. To work on the UI/Ux
+*/
